@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.isep.acme.domain.model.Product;
 import com.isep.acme.domain.service.ProductService;
 import com.isep.acme.dto.ProductDTO;
+import com.isep.acme.messaging.ProductProducer;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,6 +32,7 @@ import lombok.AllArgsConstructor;
 class ProductController {
 
     private final ProductService service;
+    private final ProductProducer productProducer;
 
 
     @Operation(summary = "gets catalog, i.e. all products")
@@ -68,6 +70,7 @@ class ProductController {
     public ResponseEntity<ProductDTO> create(@RequestBody Product manager) {
         try {
             final ProductDTO product = service.create(manager);
+            productProducer.productCreated(manager);
             return new ResponseEntity<ProductDTO>(product, HttpStatus.CREATED);
         }
         catch( Exception e ) {
