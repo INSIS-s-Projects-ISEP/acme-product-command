@@ -36,7 +36,7 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
   @Query("UPDATE Product p SET p.sku = :sku WHERE p.sku=:sku")
   Product updateBySku(@Param("sku") String sku);
 
-  @Query("SELECT p FROM Product p WHERE p.productID=:productID")
-  Optional<Product> findById(Long productID);
+  @Query("SELECT p FROM Product p WHERE p.productId=:productId")
+  Optional<Product> findById(Long productId);
 
 }
