@@ -80,13 +80,11 @@ public class ProductConsumer {
             return;
         }
 
-        ProductMessage productMessage = (ProductMessage) messageConverter.fromMessage(message);
-        log.info("Product received: " + productMessage);
-
-        Product product = productMapper.toEntity(productMessage);
-        productService.deleteBySku(product.getSku());
+        String sku = (String) messageConverter.fromMessage(message);
+        log.info("Product received: " + sku);
+        productService.deleteBySku(sku);
         channel.basicAck(tag, false);
         
-        log.info("Product deleted: " + product);
+        log.info("Product deleted: " + sku);
     }
 }
