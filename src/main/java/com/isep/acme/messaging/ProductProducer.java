@@ -20,4 +20,13 @@ public class ProductProducer {
         rabbitmqService.sendMessage("product.product-created", "", productMessage);
     }
 
+    public void productUpdated(Product product){
+        ProductMessage productMessage = productMapper.toMessage(product);
+        rabbitmqService.sendMessage("product.product-updated", "", productMessage);
+    }
+
+    public void productDeleted(String sku){
+        rabbitmqService.sendMessage("product.product-deleted", "", sku);
+    }
+
 }

@@ -61,6 +61,7 @@ class ProductController {
         try {
             Product product = productMapper.toEntity(productRequest);
             Product productUpdated = productService.updateBySku(sku, product);
+            productProducer.productUpdated(product);
 
             ProductResponse productResponse = productMapper.toResponse(productUpdated);
             return ResponseEntity.ok().body(productResponse);
@@ -73,7 +74,8 @@ class ProductController {
     @Operation(summary = "deletes a product")
     @DeleteMapping(value = "/{sku}")
     public ResponseEntity<Product> delete(@PathVariable("sku") String sku ){
-        productService.deleteBySku(sku);
+        productService.deleteBySku(sku);        
+        productProducer.productDeleted(sku);
         return ResponseEntity.noContent().build();
     }
 

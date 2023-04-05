@@ -49,4 +49,44 @@ public class ProductConsumer {
         
         log.info("Product created: " + product);
     }
+
+    @RabbitListener(queues = "#{productUpdatedQueue.name}", ackMode = "MANUAL")
+    public void productUpdated(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
+
+        MessageProperties messageProperties = message.getMessageProperties();
+        if(messageProperties.getAppId().equals(instanceId)){
+            channel.basicAck(tag, false);
+            log.info("Received own message.");
+            return;
+        }
+
+        ProductMessage productMessage = (ProductMessage) messageConverter.fromMessage(message);
+        log.info("Product received: " + productMessage);
+
+        Product product = productMapper.toEntity(productMessage);
+        productService.updateBySku(product.getSku(),product);
+        channel.basicAck(tag, false);
+        
+        log.info("Product updated: " + product);
+    }
+
+    @RabbitListener(queues = "#{productDeletedQueue.name}", ackMode = "MANUAL")
+    public void productDeleted(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
+
+        MessageProperties messageProperties = message.getMessageProperties();
+        if(messageProperties.getAppId().equals(instanceId)){
+            channel.basicAck(tag, false);
+            log.info("Received own message.");
+            return;
+        }
+
+        ProductMessage productMessage = (ProductMessage) messageConverter.fromMessage(message);
+        log.info("Product received: " + productMessage);
+
+        Product product = productMapper.toEntity(productMessage);
+        productService.deleteBySku(product.getSku());
+        channel.basicAck(tag, false);
+        
+        log.info("Product deleted: " + product);
+    }
 }
