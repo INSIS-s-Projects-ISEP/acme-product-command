@@ -31,6 +31,7 @@ public class ProductConsumer {
 
         MessageProperties messageProperties = message.getMessageProperties();
         if(messageProperties.getAppId().equals(instanceId)){
+            channel.basicAck(tag, false);
             log.info("Received own message.");
             return;
         }
