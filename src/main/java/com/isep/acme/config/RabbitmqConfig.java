@@ -42,7 +42,7 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    public FanoutExchange fanoutExchange(){
+    public FanoutExchange productCreatedExchange(){
         return new FanoutExchange("product.product-created");
     }
 
@@ -52,8 +52,38 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    public Binding binding(FanoutExchange fanoutExchange, Queue queue){
-        return BindingBuilder.bind(queue).to(fanoutExchange);
+    public Binding bindingProductCreatedtoProductCreated(FanoutExchange productCreatedExchange, Queue productCreatedQueue){
+        return BindingBuilder.bind(productCreatedQueue).to(productCreatedExchange);
+    }
+
+    @Bean
+    public FanoutExchange productUpdatedExchange(){
+        return new FanoutExchange("product.product-updated");
+    }
+
+    @Bean
+    public Queue productUpdatedQueue(String instanceId){
+        return new Queue("product.product-updated.product-command." + instanceId, true, true, true);
+    }
+
+    @Bean
+    public Binding bindingProductUpdatedtoProductUpdated(FanoutExchange productUpdatedExchange, Queue productUpdatedQueue){
+        return BindingBuilder.bind(productUpdatedQueue).to(productUpdatedExchange);
+    }
+
+    @Bean
+    public FanoutExchange productDeletedExchange(){
+        return new FanoutExchange("product.product-deleted");
+    }
+
+    @Bean
+    public Queue productDeletedQueue(String instanceId){
+        return new Queue("product.product-deleted.product-command." + instanceId, true, true, true);
+    }
+
+    @Bean
+    public Binding bindingProductDeletedtoProductDeleted(FanoutExchange productDeletedExchange, Queue productDeletedQueue){
+        return BindingBuilder.bind(productDeletedQueue).to(productDeletedExchange);
     }
 
     @Bean
