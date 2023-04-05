@@ -42,7 +42,7 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    public FanoutExchange fanoutExchange(){
+    public FanoutExchange productCreatedExchange(){
         return new FanoutExchange("product.product-created");
     }
 
@@ -52,8 +52,8 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    public Binding binding(FanoutExchange fanoutExchange, Queue queue){
-        return BindingBuilder.bind(queue).to(fanoutExchange);
+    public Binding bindingProductCreatedtoProductCreated(FanoutExchange productCreatedExchange, Queue productCreatedQueue){
+        return BindingBuilder.bind(productCreatedQueue).to(productCreatedExchange);
     }
 
     @Bean
