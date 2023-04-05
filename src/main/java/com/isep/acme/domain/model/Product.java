@@ -10,6 +10,7 @@ import javax.persistence.Id;
 
 import com.isep.acme.dto.ProductDTO;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Product {
 
     @Id
@@ -33,25 +35,10 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
-    public Product(Long productId, String sku) {
-        this.productId = Objects.requireNonNull(productId);
-        setSku(sku);
-    }
-
-    public Product(Long productId, String sku, String designation, String description) {
-        this(productId, sku);
-        setDescription(description);
-        setDesignation(designation);
-    }
-
-    public Product(String sku) {
-        setSku(sku);
-    }
-
     public Product(String sku, String designation, String description) {
-        this(sku);
-        setDescription(description);
-        setDesignation(designation);
+        this.sku = sku;
+        this.description = description;
+        this.designation = designation;
     }
 
     public void setSku(String sku) {

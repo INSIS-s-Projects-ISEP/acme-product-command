@@ -27,42 +27,12 @@ import lombok.AllArgsConstructor;
 
 @Tag(name = "Product", description = "Endpoints for managing  products")
 @RestController
-@RequestMapping("/products")
 @AllArgsConstructor
+@RequestMapping("/products")
 class ProductController {
 
     private final ProductService service;
     private final ProductProducer productProducer;
-
-
-    @Operation(summary = "gets catalog, i.e. all products")
-    @GetMapping
-    public ResponseEntity<Iterable<ProductDTO>> getCatalog() {
-       final var products = service.getCatalog();
-
-       return ResponseEntity.ok().body( products );
-    }
-
-    @Operation(summary = "finds product by sku")
-    @GetMapping(value = "/{sku}")
-    public ResponseEntity<ProductDTO> getProductBySku(@PathVariable("sku") final String sku) {
-
-        final Optional<ProductDTO> product = service.findBySku(sku);
-
-        if( product.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Product not found.");
-        else
-            return ResponseEntity.ok().body(product.get());
-    }
-
-    @Operation(summary = "finds product by designation")
-    @GetMapping(value = "/designation/{designation}")
-    public ResponseEntity<Iterable<ProductDTO>> findAllByDesignation(@PathVariable("designation") final String designation){
-
-        final Iterable<ProductDTO> products = service.findByDesignation( designation );
-        
-        return ResponseEntity.ok().body( products );
-    }
 
     @Operation(summary = "creates a product")
     @PostMapping
@@ -97,4 +67,5 @@ class ProductController {
         service.deleteBySku(sku);
         return ResponseEntity.noContent().build();
     }
+
 }
