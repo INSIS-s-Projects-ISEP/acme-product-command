@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import com.isep.acme.domain.model.Product;
 import com.isep.acme.domain.service.ProductService;
+import com.isep.acme.dto.mapper.ProductMapper;
+import com.isep.acme.dto.message.ProductMessage;
 import com.rabbitmq.client.Channel;
 
 import lombok.AllArgsConstructor;
@@ -22,9 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class ProductConsumer {
 
-    private final String instanceId;
-    private final ProductService productService;
     private final MessageConverter messageConverter;
+    private final String instanceId;
+    
+    private final ProductService productService;
+    private final ProductMapper productMapper;
     
     @RabbitListener(queues = "#{productCreatedQueue.name}", ackMode = "MANUAL")
     public void productCreated(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
@@ -36,11 +40,13 @@ public class ProductConsumer {
             return;
         }
 
-        Product product = (Product) messageConverter.fromMessage(message);
-        log.info("Product received: " + product);
+        ProductMessage productMessage = (ProductMessage) messageConverter.fromMessage(message);
+        log.info("Product received: " + productMessage);
+
+        Product product = productMapper.toEntity(productMessage);
         productService.create(product);
         channel.basicAck(tag, false);
-        log.info("Product created: " + product);
         
+        log.info("Product created: " + product);
     }
 }

@@ -14,7 +14,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.isep.acme.domain.model.Product;
 import com.isep.acme.domain.service.ProductService;
-import com.isep.acme.dto.ProductDTO;
+import com.isep.acme.dto.mapper.ProductMapper;
+import com.isep.acme.dto.request.ProductRequest;
+import com.isep.acme.dto.response.ProductResponse;
 import com.isep.acme.messaging.ProductProducer;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,40 +30,50 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/products")
 class ProductController {
 
-    private final ProductService service;
+    private final ProductService productService;
+    private final ProductMapper productMapper;
     private final ProductProducer productProducer;
 
     @Operation(summary = "creates a product")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ProductDTO> create(@RequestBody Product manager) {
+    public ResponseEntity<ProductResponse> create(@RequestBody ProductRequest productRequest){
+
+        Product product = productMapper.toEntity(productRequest);
         try {
-            final ProductDTO product = service.create(manager);
-            productProducer.productCreated(manager);
-            return new ResponseEntity<ProductDTO>(product, HttpStatus.CREATED);
+            productService.create(product);
+            productProducer.productCreated(product);
+
+            ProductResponse productResponse = productMapper.toResponse(product);
+            return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
         }
-        catch( Exception e ) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,"Product must have a unique SKU.");
+        catch(Exception e) {
+            throw new ResponseStatusException(
+                HttpStatus.CONFLICT, "Product must have a unique SKU."
+            );
         }
+
     }
 
     @Operation(summary = "updates a product")
     @PatchMapping(value = "/{sku}")
-    public ResponseEntity<ProductDTO> Update(@PathVariable("sku") final String sku, @RequestBody final Product product) {
+    public ResponseEntity<ProductResponse> update(@PathVariable("sku") String sku, @RequestBody ProductRequest productRequest){
+        try {
+            Product product = productMapper.toEntity(productRequest);
+            Product productUpdated = productService.updateBySku(sku, product);
 
-        final ProductDTO productDTO = service.updateBySku(sku, product);
+            ProductResponse productResponse = productMapper.toResponse(productUpdated);
+            return ResponseEntity.ok().body(productResponse);
 
-        if( productDTO == null )
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Product not found.");
-        else
-            return ResponseEntity.ok().body(productDTO);
+        } catch(Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found.");
+        }
     }
 
     @Operation(summary = "deletes a product")
     @DeleteMapping(value = "/{sku}")
-    public ResponseEntity<Product> delete(@PathVariable("sku") final String sku ){
-
-        service.deleteBySku(sku);
+    public ResponseEntity<Product> delete(@PathVariable("sku") String sku ){
+        productService.deleteBySku(sku);
         return ResponseEntity.noContent().build();
     }
 
