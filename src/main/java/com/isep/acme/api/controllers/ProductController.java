@@ -63,10 +63,10 @@ class ProductController {
         try {
             Product product = productMapper.toEntity(productRequest);
             Product productUpdated = productService.updateBySku(sku, product);
-            productProducer.productUpdated(product);
+            productProducer.productUpdated(productUpdated);
 
             ProductResponse productResponse = productMapper.toResponse(productUpdated);
-            log.info("Product updated: " + product.getSku());
+            log.info("Product updated: " + sku);
             return ResponseEntity.ok().body(productResponse);
             
         } catch(Exception e){

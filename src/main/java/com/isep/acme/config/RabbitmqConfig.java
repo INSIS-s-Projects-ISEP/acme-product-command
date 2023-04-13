@@ -53,6 +53,7 @@ public class RabbitmqConfig {
         return event -> rabbitAdmin.initialize();
     }
 
+    // Product Created
     @Bean
     public FanoutExchange productCreatedExchange(){
         return new FanoutExchange("product.product-created");
@@ -68,6 +69,7 @@ public class RabbitmqConfig {
         return BindingBuilder.bind(productCreatedQueue).to(productCreatedExchange);
     }
 
+    // Product Updated
     @Bean
     public FanoutExchange productUpdatedExchange(){
         return new FanoutExchange("product.product-updated");
@@ -83,6 +85,7 @@ public class RabbitmqConfig {
         return BindingBuilder.bind(productUpdatedQueue).to(productUpdatedExchange);
     }
 
+    // Product Deleted
     @Bean
     public FanoutExchange productDeletedExchange(){
         return new FanoutExchange("product.product-deleted");
@@ -98,6 +101,7 @@ public class RabbitmqConfig {
         return BindingBuilder.bind(productDeletedQueue).to(productDeletedExchange);
     }
 
+    // Message Processor
     @Bean
     public MessagePostProcessor beforePublishPostProcessor(String instanceId){
         return new MessagePostProcessor() {
