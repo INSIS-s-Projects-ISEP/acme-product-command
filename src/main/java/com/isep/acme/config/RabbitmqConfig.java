@@ -16,12 +16,24 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Configuration
 public class RabbitmqConfig {
-    
+
+    @Bean
+    public Jackson2JsonMessageConverter jackson2JsonMessageConverter(){
+        return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper(){
+        return new ObjectMapper();
+    }
+
     @Bean
     public RabbitTemplate rabbitTemplate(
-        ConnectionFactory connectionFactory, 
+        ConnectionFactory connectionFactory,
         Jackson2JsonMessageConverter jackson2JsonMessageConverter,
         MessagePostProcessor beforePublishPostProcessor){
 
@@ -97,7 +109,7 @@ public class RabbitmqConfig {
             }
         };
     }
-    
+
     // Bootstrapper
     @Bean
     public FanoutExchange rpcProductExchange(){
