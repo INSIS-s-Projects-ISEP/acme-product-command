@@ -3,6 +3,7 @@ package com.isep.acme.api.controllers;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -69,7 +70,7 @@ public class FileController {
     }
 
     @GetMapping(value = "/ID/{productID}")
-    public ResponseEntity<Product> findByID(@PathVariable("productID") final Long productID){
+    public ResponseEntity<Product> findByID(@PathVariable("productID") final UUID productID){
         final var product = pRepo.findById(productID)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found"));
 

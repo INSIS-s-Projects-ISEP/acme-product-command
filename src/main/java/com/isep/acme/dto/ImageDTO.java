@@ -1,38 +1,26 @@
 package com.isep.acme.dto;
 
+import java.util.UUID;
+
 import com.isep.acme.domain.service.ImageService;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ImageDTO {
 
     private ImageService service;
-    private Long id;
-
-    private Long productID;
-
-    public ImageDTO(Long id, Long productID) {
-
+    private UUID id;
+    private UUID productId;
+    
+    public ImageDTO(UUID id, UUID productId) {
         this.id = id;
-        this.productID = productID;
-
+        this.productId = productId;
     }
-
-    public Long getProductID() {
-        return productID;
-    }
-
-    public void setProductID(Long productID) {
-        this.productID = productID;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Iterable<ImageDTO> getImageProduct() {
-        return service.getImageProduct();
-    }
+    
 }

@@ -20,13 +20,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class FileStorageService {
     private final Path fileStorageLocation;
     private ProductRepository repository;
 
-    public Optional<Product> findByID(final Long id) {
+    public Optional<Product> findByID(final UUID id) {
         return repository.findById(id);
     }
 

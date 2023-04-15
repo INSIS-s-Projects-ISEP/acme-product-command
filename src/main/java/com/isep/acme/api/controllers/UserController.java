@@ -1,6 +1,9 @@
 package com.isep.acme.api.controllers;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{userId}")
-    public UserView getUser(@PathVariable final Long userId) {
+    public UserView getUser(@PathVariable final UUID userId) {
 
         return userService.getUser(userId);
     }
