@@ -83,5 +83,4 @@ class ProductController {
         log.info("Product deleted: " + sku);
         return ResponseEntity.noContent().build();
     }
-
 }
